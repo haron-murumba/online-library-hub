@@ -39,6 +39,10 @@ INSTALLED_APPS = [
     'library',
     'crispy_forms',
     'crispy_bootstrap5',
+    # Add these for REST API
+    'rest_framework',
+    'rest_framework.authtoken',  # For token authentication
+    'corsheaders',  # To allow frontend to connect
 ]
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
@@ -57,6 +61,7 @@ LOGOUT_REDIRECT_URL = 'home'
 LOGIN_URL = 'login'
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # Add this line
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -138,3 +143,30 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Add these at the bottom of settings.py
+# REST Framework configuration
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    ],
+}
+
+# CORS settings (allow frontend to access API)
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # React default port
+    "http://127.0.0.1:3000",
+    "http://localhost:8080",  # Vue default port
+    "http://localhost:4200",  # Angular default port
+]
+
+# Or during development, you can allow all origins
+CORS_ALLOW_ALL_ORIGINS = True  # Only for development!
+
+# Media files configuration
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
